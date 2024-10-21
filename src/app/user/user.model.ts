@@ -5,5 +5,5 @@ export const userTable = mysqlTable('users', {
   name: text('name').notNull(),
   email: varchar('email', { length: 255 }).notNull().unique(),
   hash: text('hash').notNull(),
-  refreshToken: text('refresh_token'),
+  refresh_token: text('refresh_token').notNull(),
 });

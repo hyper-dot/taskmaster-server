@@ -15,4 +15,5 @@ class AuthRoutes {
   }
 }
 
-export const authRoutes = new AuthRoutes().router;
+const authRoutes = new AuthRoutes().router;
+export default authRoutes;

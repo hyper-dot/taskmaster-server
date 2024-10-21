@@ -1,7 +1,10 @@
-import { BadRequestError } from '../../utils/exceptions';
+import { BadRequestError, InternalServerError } from '../../utils/exceptions';
 import { AuthService } from '../auth/auth.service';
 import { TUserSchema, userSchema } from './user.schema';
+
 import { userTable } from './user.model';
+import { connectdb } from '../../configs/db';
+import { eq } from 'drizzle-orm';
 
 export default class UserService {
   private authService: AuthService;
@@ -14,17 +17,29 @@ export default class UserService {
     const { success, data } = userSchema.safeParse(payload);
     if (!success) throw new BadRequestError();
 
+    const db = await connectdb();
+
     // Check if user with same email exist
+    const [existingUser] = await db
+      .select()
+      .from(userTable)
+      .where(eq(userTable.email, data.email))
+      .execute();
+
+    if (existingUser) throw new BadRequestError('User already exists');
 
     // Add refresh token to user
+    const refresh_token = this.authService.generateRefreshToken({
+      email: data.email,
+    });
+    const hash = await this.authService.hashPassword(data.password);
 
-    // Add hashed password to the user
+    // Save user
+    await db
+      .insert(userTable)
+      .values({ name: data.name, email: data.email, hash, refresh_token })
+      .execute();
 
-    // await newUser.save();
     return { message: 'User created successfully' };
-  }
-
-  async getUserData(id: string) {
-    // return await UserModel.findById(id).select('name role email');
   }
 }

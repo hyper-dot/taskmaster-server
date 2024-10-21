@@ -7,7 +7,8 @@ import { swaggerConfig } from '../configs/swagger';
 
 // import { isAuthencticated } from '../middleware';
 
-import { authRoutes } from './auth/auth.routes';
+import authRoutes from './auth/auth.routes';
+import userRoutes from './user/user.route';
 
 import { handleError } from '../utils/errors';
 import { NotFoundError } from '../utils/exceptions';
@@ -29,6 +30,7 @@ export class App {
 
   private setRoutes() {
     this.app.use('/auth', authRoutes);
+    this.app.use('/user', userRoutes);
     if ((process.env.ENV = 'development')) {
       this.app.use(
         '/api/docs',

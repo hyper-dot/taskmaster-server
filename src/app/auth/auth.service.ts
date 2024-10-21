@@ -8,9 +8,7 @@ import {
 import { userTable } from '../user/user.model';
 
 type User = {
-  id: string;
   email: string;
-  role: string;
 };
 
 export class AuthService {
@@ -27,19 +25,15 @@ export class AuthService {
   }
 
   generateAccessToken(user: User) {
-    return jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
-      this.accessTokenSecret,
-      { expiresIn: this.accessTokenExpiry },
-    );
+    return jwt.sign({ email: user.email }, this.accessTokenSecret, {
+      expiresIn: this.accessTokenExpiry,
+    });
   }
 
   generateRefreshToken(user: User) {
-    return jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
-      this.refreshTokenSecret,
-      { expiresIn: this.refreshTokenExpiry },
-    );
+    return jwt.sign({ email: user.email }, this.refreshTokenSecret, {
+      expiresIn: this.refreshTokenExpiry,
+    });
   }
 
   verifyAccessToken(token: string) {
@@ -62,9 +56,7 @@ export class AuthService {
     try {
       const user: any = this.verifyRefreshToken(refreshToken);
       const token = this.generateAccessToken({
-        id: user.id,
         email: user.email,
-        role: user.role || 'user',
       });
       console.log('TOKEN', token);
       return token;
@@ -109,9 +101,7 @@ export class AuthService {
 
     // Generate access token
     const accessToken = this.generateAccessToken({
-      id: user.id,
       email: user.email,
-      role: user.role,
     });
 
     // Return the generated tokens
