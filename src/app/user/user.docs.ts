@@ -1,12 +1,5 @@
 /**
  * @swagger
- * tags:
- *   name: Users
- *   description: API for managing users
- */
-
-/**
- * @swagger
  * components:
  *   responses:
  *     200:
