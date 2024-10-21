@@ -17,7 +17,7 @@ export default class UserService {
     const { success, data } = userSchema.safeParse(payload);
     if (!success) throw new BadRequestError();
 
-    const db = await connectdb();
+    const { db, connection } = await connectdb();
 
     // Check if user with same email exist
     const [existingUser] = await db
@@ -40,6 +40,16 @@ export default class UserService {
       .values({ name: data.name, email: data.email, hash, refresh_token })
       .execute();
 
+    await connection.end();
     return { message: 'User created successfully' };
+  }
+
+  async getUserData(id: number) {
+    const { db, connection } = await connectdb();
+    const [existingUser] = await db
+      .select()
+      .from(userTable)
+      .where(eq(userTable.id, id))
+      .execute();
   }
 }

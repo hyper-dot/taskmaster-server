@@ -6,5 +6,5 @@ export async function connectdb() {
     uri: process.env.DB_URL,
   });
 
-  return drizzle({ client: connection });
+  return { db: drizzle({ client: connection }), connection };
 }
