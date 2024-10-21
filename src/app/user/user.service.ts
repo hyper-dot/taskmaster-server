@@ -1,4 +1,8 @@
-import { BadRequestError, InternalServerError } from '../../utils/exceptions';
+import {
+  BadRequestError,
+  InternalServerError,
+  NotFoundError,
+} from '../../utils/exceptions';
 import { AuthService } from '../auth/auth.service';
 import { TUserSchema, userSchema } from './user.schema';
 
@@ -39,17 +43,22 @@ export default class UserService {
       .insert(userTable)
       .values({ name: data.name, email: data.email, hash, refresh_token })
       .execute();
-
     await connection.end();
+
     return { message: 'User created successfully' };
   }
 
   async getUserData(id: number) {
     const { db, connection } = await connectdb();
-    const [existingUser] = await db
+    const [user] = await db
       .select()
       .from(userTable)
       .where(eq(userTable.id, id))
       .execute();
+    await connection.end();
+
+    if (!user) throw new NotFoundError('User not found');
+    const { hash, refresh_token, ...rest } = user;
+    return rest;
   }
 }

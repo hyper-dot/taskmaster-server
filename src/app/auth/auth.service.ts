@@ -1,14 +1,13 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import {
-  BadRequestError,
-  ForbiddenError,
-  UnauthorizedError,
-} from '../../utils/exceptions';
+import { BadRequestError, UnauthorizedError } from '../../utils/exceptions';
 import { userTable } from '../user/user.model';
+import { connectdb } from '../../configs/db';
+import { eq } from 'drizzle-orm';
 
 type User = {
   email: string;
+  id: number;
 };
 
 export class AuthService {
@@ -24,16 +23,24 @@ export class AuthService {
     this.refreshTokenExpiry = '7d';
   }
 
-  generateAccessToken(user: User) {
-    return jwt.sign({ email: user.email }, this.accessTokenSecret, {
-      expiresIn: this.accessTokenExpiry,
-    });
+  generateAccessToken(user: Partial<User>) {
+    return jwt.sign(
+      { email: user.email, id: user.id },
+      this.accessTokenSecret,
+      {
+        expiresIn: this.accessTokenExpiry,
+      },
+    );
   }
 
-  generateRefreshToken(user: User) {
-    return jwt.sign({ email: user.email }, this.refreshTokenSecret, {
-      expiresIn: this.refreshTokenExpiry,
-    });
+  generateRefreshToken(user: Partial<User>) {
+    return jwt.sign(
+      { email: user.email, id: user.id },
+      this.refreshTokenSecret,
+      {
+        expiresIn: this.refreshTokenExpiry,
+      },
+    );
   }
 
   verifyAccessToken(token: string) {
@@ -57,6 +64,7 @@ export class AuthService {
       const user: any = this.verifyRefreshToken(refreshToken);
       const token = this.generateAccessToken({
         email: user.email,
+        id: user.id,
       });
       console.log('TOKEN', token);
       return token;
@@ -85,13 +93,17 @@ export class AuthService {
 
     // Fetch the user by email
     // const user = await UserModel.findOne({ email });
-    let user;
+    const { db, connection } = await connectdb();
+    const [user] = await db
+      .select()
+      .from(userTable)
+      .where(eq(userTable.email, email))
+      .execute();
+    await connection.end();
 
     if (!user) {
       throw new UnauthorizedError('Invalid credentials');
     }
-
-    if (!user.isVerified) throw new ForbiddenError('You must verify otp first');
 
     // Compare the plain password with the hashed password in the database
     const isPasswordValid = await this.comparePassword(password, user.hash);
@@ -102,20 +114,19 @@ export class AuthService {
     // Generate access token
     const accessToken = this.generateAccessToken({
       email: user.email,
+      id: user.id,
     });
 
     // Return the generated tokens
     return {
       message: 'Login successful',
       user: {
-        id: user._id.toString(),
         name: user.name,
         email: user.email,
-        role: user.role,
       },
       data: {
         accessToken,
-        refreshToken: user.refreshToken,
+        refreshToken: user.refresh_token,
       },
     };
   }

@@ -64,3 +64,19 @@
  *       500:
  *         $ref: '#/components/responses/500'
  */
+
+/**
+ * @swagger
+ * /user/profile:
+ *   get:
+ *     summary:
+ *     description: Get own profile data
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         $ref: '#/components/responses/200'
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */

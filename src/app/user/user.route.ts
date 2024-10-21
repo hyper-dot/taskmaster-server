@@ -15,7 +15,7 @@ class UserRoutes {
 
   mountRoutes() {
     this.router.post('/', this.controller.addUser);
-    this.router.get('/my-data', isAuthencticated, this.controller.getMyData);
+    this.router.get('/profile', isAuthencticated, this.controller.getMyData);
   }
 }
 
