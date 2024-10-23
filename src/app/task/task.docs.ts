@@ -60,3 +60,72 @@
  *       500:
  *         $ref: '#/components/responses/500'
  */
+
+/**
+ * @swagger
+ * /task:
+ *   get:
+ *     summary: Retrieve tasks for a specific user
+ *     description: Retrieves a list of tasks for a specific user with optional filters for progress and searchQuery.
+ *     tags: [Task]
+ *     parameters:
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           enum: [dueDate, title, progress]
+ *         description: Sort tasks
+ *       - in: query
+ *         name: progress
+ *         schema:
+ *           type: string
+ *           enum: [todo, in_progress, completed]
+ *         description: Filter tasks by their current progress status
+ *         example: in_progress
+ *       - in: query
+ *         name: searchQuery
+ *         schema:
+ *           type: string
+ *         description: Filter tasks by title or description containing this search query
+ *         example: project
+ *     responses:
+ *       200:
+ *         description: A list of tasks for the user, optionally filtered by progress or search query
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: The ID of the task
+ *                     example: 1
+ *                   title:
+ *                     type: string
+ *                     description: The title of the task
+ *                     example: Complete project proposal
+ *                   description:
+ *                     type: string
+ *                     description: The detailed description of the task
+ *                     example: Draft and finalize the Q3 project proposal document
+ *                   progress:
+ *                     type: string
+ *                     description: The current progress of the task
+ *                     enum: [todo, in_progress, completed]
+ *                     example: in_progress
+ *                   dueDate:
+ *                     type: string
+ *                     format: date-time
+ *                     description: The due date and time of the task
+ *                     example: 2024-12-31T23:59:59Z
+ *                   userId:
+ *                     type: integer
+ *                     description: The ID of the user to whom the task belongs
+ *                     example: 1
+ *       400:
+ *         $ref: '#/components/responses/400'
+ *       500:
+ *         $ref: '#/components/responses/500'
+ */

@@ -19,7 +19,7 @@ export class AuthService {
   constructor() {
     this.accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
     this.refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
-    this.accessTokenExpiry = '15m';
+    this.accessTokenExpiry = '12h';
     this.refreshTokenExpiry = '7d';
   }
 

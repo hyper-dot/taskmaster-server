@@ -1,4 +1,4 @@
-import { BadRequestError } from '../../utils/exceptions';
+import { UnauthorizedError } from '../../utils/exceptions';
 import { asyncWrapper } from '../../utils/wrapper';
 import UserService from './user.service';
 
@@ -15,7 +15,7 @@ export default class UserController {
   });
 
   getMyData = asyncWrapper(async (req, res) => {
-    if (isNaN(Number(req.userId))) throw new BadRequestError('Invalid user id');
+    if (isNaN(Number(req.userId))) throw new UnauthorizedError();
     const data = await this.service.getUserData(Number(req.userId));
     return res.json({ data });
   });

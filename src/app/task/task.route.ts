@@ -12,6 +12,7 @@ export class TaskRoute {
   }
   private mountRoutes() {
     this.router.post('/', isAuthencticated, this.controller.createTask);
+    this.router.get('/', isAuthencticated, this.controller.getTasks);
   }
 }
 
