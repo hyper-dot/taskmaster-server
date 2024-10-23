@@ -111,6 +111,7 @@ export class AuthService {
       throw new UnauthorizedError('Invalid credentials');
     }
 
+    console.log({ user });
     // Generate access token
     const accessToken = this.generateAccessToken({
       email: user.email,
