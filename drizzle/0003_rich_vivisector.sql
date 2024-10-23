@@ -1,1 +1,0 @@
-ALTER TABLE `users` MODIFY COLUMN `refresh_token` text NOT NULL;

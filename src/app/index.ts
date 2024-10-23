@@ -12,6 +12,7 @@ import userRoutes from './user/user.route';
 
 import { handleError } from '../utils/errors';
 import { NotFoundError } from '../utils/exceptions';
+import taskRoutes from './task/task.route';
 
 export class App {
   public app: Application;
@@ -31,6 +32,7 @@ export class App {
   private setRoutes() {
     this.app.use('/auth', authRoutes);
     this.app.use('/user', userRoutes);
+    this.app.use('/task', taskRoutes);
     if ((process.env.ENV = 'development')) {
       this.app.use(
         '/api/docs',

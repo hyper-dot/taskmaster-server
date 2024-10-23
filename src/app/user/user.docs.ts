@@ -66,8 +66,8 @@
  *     description: Get own profile data
  *     tags: [Auth]
  *     responses:
- *       200:
- *         $ref: '#/components/responses/200'
+ *       201:
+ *         $ref: '#/components/responses/201'
  *       400:
  *         $ref: '#/components/responses/400'
  *       500:

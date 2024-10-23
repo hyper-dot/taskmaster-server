@@ -5,29 +5,15 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1729524311381,
-      "tag": "0000_open_scorpion",
+      "when": 1729686353454,
+      "tag": "0000_worried_doctor_faustus",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "5",
-      "when": 1729526802890,
-      "tag": "0001_free_red_wolf",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1729526996839,
-      "tag": "0002_parched_professor_monster",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1729527393112,
-      "tag": "0003_rich_vivisector",
+      "when": 1729686797770,
+      "tag": "0001_small_kylun",
       "breakpoints": true
     }
   ]
