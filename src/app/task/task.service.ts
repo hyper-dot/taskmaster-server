@@ -122,11 +122,10 @@ export default class TaskService {
       .where(and(eq(taskTable.id, taskId), eq(taskTable.userId, userId)))
       .execute();
 
-    await connection.end();
-
     if (!task) throw new BadRequestError('Task not found');
 
     // Delete the task
     await db.delete(taskTable).where(eq(taskTable.id, taskId)).execute();
+    await connection.end();
   }
 }
