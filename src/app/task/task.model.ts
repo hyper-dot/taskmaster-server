@@ -14,9 +14,13 @@ export const taskTable = mysqlTable('tasks', {
   description: text('description').notNull(),
   progress: varchar('progress', { length: 20 }).notNull().default('todo'),
   dueDate: timestamp('due_date').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(), // Add createdAt field with default as current timestamp
   userId: int('user_id')
     .notNull()
-    .references(() => userTable.id), // Ensure this references correctly
+    .references(() => userTable.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade',
+    }), // Ensure this references correctly
 });
 
 // Define proper types using drizzle's inference

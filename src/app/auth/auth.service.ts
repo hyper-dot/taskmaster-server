@@ -62,6 +62,7 @@ export class AuthService {
   refreshAccessToken(refreshToken: string) {
     try {
       const user: any = this.verifyRefreshToken(refreshToken);
+      console.log('VEIRFIED USER', user);
       const token = this.generateAccessToken({
         email: user.email,
         id: user.id,

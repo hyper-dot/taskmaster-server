@@ -19,7 +19,6 @@ export const isAuthencticated = (
 
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    console.log({ decoded });
     req.userId = (decoded as any).id;
     return next();
   } catch (err) {

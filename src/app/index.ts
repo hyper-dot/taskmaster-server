@@ -44,7 +44,7 @@ export class App {
 
   private handleErrors() {
     this.app.use('*', () => {
-      throw new NotFoundError();
+      throw new NotFoundError('Route not found');
     });
 
     this.app.use(

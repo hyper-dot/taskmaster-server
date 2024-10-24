@@ -1,8 +1,4 @@
-import {
-  BadRequestError,
-  InternalServerError,
-  NotFoundError,
-} from '../../utils/exceptions';
+import { BadRequestError, NotFoundError } from '../../utils/exceptions';
 import { AuthService } from '../auth/auth.service';
 import { TUserSchema, userSchema } from './user.schema';
 
@@ -32,19 +28,39 @@ export default class UserService {
 
     if (existingUser) throw new BadRequestError('User already exists');
 
-    // Add refresh token to user
-    const refresh_token = this.authService.generateRefreshToken({
-      email: data.email,
-    });
     const hash = await this.authService.hashPassword(data.password);
 
-    // Save user
-    await db
-      .insert(userTable)
-      .values({ name: data.name, email: data.email, hash, refresh_token })
-      .execute();
-    await connection.end();
+    // Generate refresh token with a temporary ID
+    // We'll include the actual ID in the token when we update it
+    const temp_refresh_token = this.authService.generateRefreshToken({
+      email: data.email,
+    });
 
+    // Insert user with all required fields
+    const [newUser] = await db
+      .insert(userTable)
+      .values({
+        name: data.name,
+        email: data.email,
+        hash,
+        refresh_token: temp_refresh_token,
+      })
+      .$returningId();
+
+    // Generate final refresh token with both email and id
+    const refresh_token = this.authService.generateRefreshToken({
+      email: data.email,
+      id: newUser.id,
+    });
+
+    // Update user with the final refresh token
+    await db
+      .update(userTable)
+      .set({ refresh_token })
+      .where(eq(userTable.id, newUser.id))
+      .execute();
+
+    await connection.end();
     return { message: 'User created successfully' };
   }
 

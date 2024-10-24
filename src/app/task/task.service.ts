@@ -81,6 +81,35 @@ export default class TaskService {
     return tasks;
   }
 
+  async updateTask(userId: number, taskId: number, updates: Partial<NewTask>) {
+    const { db } = await connectdb();
+
+    // Validate update data
+    const { data, success } = taskSchema.partial().safeParse(updates);
+    if (!success) throw new BadRequestError('Invalid update data');
+
+    // First find the task and verify ownership
+    const [existingTask] = await db
+      .select()
+      .from(taskTable)
+      .where(and(eq(taskTable.id, taskId), eq(taskTable.userId, userId)))
+      .execute();
+
+    if (!existingTask) throw new BadRequestError('Task not found');
+
+    // Only include fields that exist in the table schema
+    await db.update(taskTable).set(data).where(eq(taskTable.id, taskId));
+
+    // Fetch and return the updated task
+    const [updatedTask] = await db
+      .select()
+      .from(taskTable)
+      .where(eq(taskTable.id, taskId))
+      .execute();
+
+    return updatedTask;
+  }
+
   async deleteTask(userId: number, taskId: number) {
     const { db } = await connectdb();
 

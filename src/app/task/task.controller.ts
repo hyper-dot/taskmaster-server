@@ -12,9 +12,16 @@ export default class TaskController {
     const data = await this.service.createTask(req.body, Number(req.userId));
     return res.json({ data, message: 'Task added successfully !' });
   });
+
   getTasks = asyncWrapper(async (req, res) => {
     const data = await this.service.getTasks(Number(req.userId), req.query);
     return res.json({ data, count: data.length });
+  });
+
+  updateTask = asyncWrapper(async (req, res) => {
+    const id = Number(req.params.id);
+    await this.service.updateTask(Number(req.userId), id, req.body);
+    return res.json({ message: 'Task updated successfully' });
   });
 
   deleteTask = asyncWrapper(async (req, res) => {
@@ -23,5 +30,4 @@ export default class TaskController {
     await this.service.deleteTask(user, id);
     return res.json({ message: 'Task deleted successfully' });
   });
-  updateTask = () => {};
 }

@@ -15,6 +15,20 @@
       "when": 1729686797770,
       "tag": "0001_small_kylun",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1729733017553,
+      "tag": "0002_volatile_lily_hollister",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1729752267199,
+      "tag": "0003_lonely_logan",
+      "breakpoints": true
     }
   ]
 }
