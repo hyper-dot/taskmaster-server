@@ -80,4 +80,20 @@ export default class TaskService {
 
     return tasks;
   }
+
+  async deleteTask(userId: number, taskId: number) {
+    const { db } = await connectdb();
+
+    // First find the task and verify ownership
+    const [task] = await db
+      .select()
+      .from(taskTable)
+      .where(and(eq(taskTable.id, taskId), eq(taskTable.userId, userId)))
+      .execute();
+
+    if (!task) throw new BadRequestError('Task not found');
+
+    // Delete the task
+    await db.delete(taskTable).where(eq(taskTable.id, taskId)).execute();
+  }
 }

@@ -16,6 +16,12 @@ export default class TaskController {
     const data = await this.service.getTasks(Number(req.userId), req.query);
     return res.json({ data, count: data.length });
   });
-  deleteTask = () => {};
+
+  deleteTask = asyncWrapper(async (req, res) => {
+    const id = Number(req.params.id);
+    const user = Number(req.userId);
+    await this.service.deleteTask(user, id);
+    return res.json({ message: 'Task deleted successfully' });
+  });
   updateTask = () => {};
 }

@@ -81,7 +81,6 @@
  *           type: string
  *           enum: [todo, in_progress, completed]
  *         description: Filter tasks by their current progress status
- *         example: in_progress
  *       - in: query
  *         name: searchQuery
  *         schema:
@@ -128,4 +127,43 @@
  *         $ref: '#/components/responses/400'
  *       500:
  *         $ref: '#/components/responses/500'
+ */
+
+/**
+ * @swagger
+ * /task/{id}:
+ *   delete:
+ *     summary: Delete a task
+ *     description: Deletes a task based on the task ID, ensuring that the user who owns the task is deleting it.
+ *     tags: [Task]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the task to delete
+ *     responses:
+ *       204:
+ *         description: Task successfully deleted
+ *       400:
+ *         description: Task not found or user does not own the task
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Task not found
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Internal server error
  */
