@@ -11,7 +11,7 @@ import { and, or, like, asc, desc } from 'drizzle-orm';
 
 export default class TaskService {
   async createTask(task: NewTask, userId: number) {
-    const { db } = await connectdb();
+    const { db, connection } = await connectdb();
     const { data, success } = taskSchema.safeParse(task);
 
     if (!success) throw new BadRequestError('Invalid data');
@@ -37,12 +37,12 @@ export default class TaskService {
         userId,
       })
       .$returningId();
-
+    await connection.end();
     return insertResult;
   }
 
   async getTasks(userId: number, filters?: TTaskFilterSchema) {
-    const { db } = await connectdb();
+    const { db, connection } = await connectdb();
 
     // Build conditions array
     const conditions = [eq(taskTable.userId, userId)];
@@ -77,12 +77,13 @@ export default class TaskService {
       .where(and(...conditions))
       .orderBy(...orderByClause)
       .execute();
+    await connection.end();
 
     return tasks;
   }
 
   async updateTask(userId: number, taskId: number, updates: Partial<NewTask>) {
-    const { db } = await connectdb();
+    const { db, connection } = await connectdb();
 
     // Validate update data
     const { data, success } = taskSchema.partial().safeParse(updates);
@@ -106,12 +107,13 @@ export default class TaskService {
       .from(taskTable)
       .where(eq(taskTable.id, taskId))
       .execute();
+    await connection.end();
 
     return updatedTask;
   }
 
   async deleteTask(userId: number, taskId: number) {
-    const { db } = await connectdb();
+    const { db, connection } = await connectdb();
 
     // First find the task and verify ownership
     const [task] = await db
@@ -119,6 +121,8 @@ export default class TaskService {
       .from(taskTable)
       .where(and(eq(taskTable.id, taskId), eq(taskTable.userId, userId)))
       .execute();
+
+    await connection.end();
 
     if (!task) throw new BadRequestError('Task not found');
 
