@@ -30,6 +30,7 @@ export class App {
   }
 
   private setRoutes() {
+    this.app.use('/checkhealth', (_, res) => res.json('ok'));
     this.app.use('/auth', authRoutes);
     this.app.use('/user', userRoutes);
     this.app.use('/task', taskRoutes);
